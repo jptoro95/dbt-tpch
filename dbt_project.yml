@@ -28,7 +28,10 @@ models:
   dbt_tpch:
       base:
         schema: base
+        +tags: ['base']
       ods:
         schema: ods
+        +tags: ['ods']
       wh:
         schema: wh
+        +tags: ['wh']

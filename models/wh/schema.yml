@@ -1,0 +1,154 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: >
+      Customer dimension with denormalized nation and region attributes.
+      One record per customer.
+    columns:
+      - name: customer_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        tests:
+          - not_null
+      - name: customer_nation_key
+        tests:
+          - not_null
+      - name: customer_region_key
+        tests:
+          - not_null
+
+  - name: dim_supplier
+    description: >
+      Supplier dimension with denormalized nation and region attributes.
+      One record per supplier.
+    columns:
+      - name: supplier_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: supplier_name
+        tests:
+          - not_null
+      - name: supplier_nation_key
+        tests:
+          - not_null
+      - name: supplier_region_key
+        tests:
+          - not_null
+
+  - name: dim_part
+    description: Part dimension. One record per part.
+    columns:
+      - name: part_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: part_name
+        tests:
+          - not_null
+
+  - name: dim_part_supplier_xrf
+    description: >
+      Cross-reference dimension joining parts and suppliers with availability
+      and cost information. One record per part-supplier combination.
+    columns:
+      - name: part_supplier_key
+        description: Primary key. Surrogate key carried from parts_suppliers.
+        tests:
+          - unique
+          - not_null
+      - name: part_key
+        tests:
+          - not_null
+      - name: supplier_key
+        tests:
+          - not_null
+
+  - name: fct_orders
+    description: >
+      Order fact table. One record per order with summarized line item amounts.
+    columns:
+      - name: order_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: order_date
+        tests:
+          - not_null
+      - name: customer_key
+        description: Foreign key to dim_customer.
+        tests:
+          - not_null
+      - name: gross_item_sales_amount
+        tests:
+          - not_null
+      - name: net_item_sales_amount
+        tests:
+          - not_null
+
+  - name: fct_orders_items
+    description: >
+      Order line item fact table. One record per line item with part, supplier,
+      and full pricing breakdown.
+    columns:
+      - name: order_item_key
+        description: Primary key. Surrogate key carried from orders_items.
+        tests:
+          - unique
+          - not_null
+      - name: order_key
+        description: Foreign key to fct_orders.
+        tests:
+          - not_null
+      - name: part_key
+        description: Foreign key to dim_part.
+        tests:
+          - not_null
+      - name: supplier_key
+        description: Foreign key to dim_supplier.
+        tests:
+          - not_null
+      - name: gross_item_sales_amount
+        tests:
+          - not_null
+      - name: net_item_sales_amount
+        tests:
+          - not_null
+
+  - name: rpt_pricing_summary
+    description: >
+      Pricing summary report (TPC-H Q1). Aggregates order line items by return
+      status and line status for shipments 90 days before the max ship date.
+      Grain is one row per return_status_code + order_line_status_code combination.
+    columns:
+      - name: return_status_code
+        tests:
+          - not_null
+      - name: order_line_status_code
+        tests:
+          - not_null
+      - name: gross_item_sales_amount
+        tests:
+          - not_null
+
+  - name: rpt_minimum_cost_suppliers
+    description: >
+      Minimum cost supplier report (TPC-H Q2). Returns up to 100 suppliers with
+      the lowest cost for each part within each region.
+    columns:
+      - name: part_key
+        tests:
+          - not_null
+      - name: supplier_cost_amount
+        tests:
+          - not_null
+      - name: supplier_name
+        tests:
+          - not_null

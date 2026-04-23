@@ -24,7 +24,7 @@ tpch:
     # ── Shared targets ──────────────────────────────────────────────────────
     prod:
       type: snowflake
-      warehouse: DEV_WH
+      warehouse: PROD_WH
       database: ANALYTICS
       schema: dbt
       role: ORCHESTRATOR

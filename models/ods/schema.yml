@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: customers
+    description: One record per customer. Sourced from the TPCH customer table.
+    columns:
+      - name: customer_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        tests:
+          - not_null
+      - name: nation_key
+        description: Foreign key to nations.
+        tests:
+          - not_null
+
+  - name: orders
+    description: One record per order. Sourced from the TPCH orders table.
+    columns:
+      - name: order_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: order_date
+        tests:
+          - not_null
+      - name: customer_key
+        description: Foreign key to customers.
+        tests:
+          - not_null
+
+  - name: suppliers
+    description: One record per supplier. Sourced from the TPCH supplier table.
+    columns:
+      - name: supplier_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: nation_key
+        description: Foreign key to nations.
+        tests:
+          - not_null
+
+  - name: parts
+    description: One record per part. Sourced from the TPCH part table.
+    columns:
+      - name: part_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: nations
+    description: One record per nation. Sourced from the TPCH nation table.
+    columns:
+      - name: nation_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: region_key
+        description: Foreign key to regions.
+        tests:
+          - not_null
+
+  - name: regions
+    description: One record per region. Sourced from the TPCH region table.
+    columns:
+      - name: region_key
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: orders_items
+    description: One record per order line item. Grain is order + line number.
+    columns:
+      - name: order_item_key
+        description: Surrogate primary key derived from order_key and order_line_number.
+        tests:
+          - unique
+          - not_null
+      - name: order_key
+        description: Foreign key to orders.
+        tests:
+          - not_null
+      - name: order_line_number
+        tests:
+          - not_null
+      - name: part_key
+        description: Foreign key to parts.
+        tests:
+          - not_null
+      - name: supplier_key
+        description: Foreign key to suppliers.
+        tests:
+          - not_null
+
+  - name: parts_suppliers
+    description: One record per part-supplier combination. Sourced from the TPCH partsupp table.
+    columns:
+      - name: part_supplier_key
+        description: Surrogate primary key derived from part_key and supplier_key.
+        tests:
+          - unique
+          - not_null
+      - name: part_key
+        description: Foreign key to parts.
+        tests:
+          - not_null
+      - name: supplier_key
+        description: Foreign key to suppliers.
+        tests:
+          - not_null
