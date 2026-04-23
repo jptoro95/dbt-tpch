@@ -1,13 +1,27 @@
 tpch:
-  target: dev
+  target: dev_jtoraason
   outputs:
-    dev:
+
+    # ── Developer targets ───────────────────────────────────────────────────
+    # Each developer has one entry here. New developers add their own target
+    # and create the matching schema in Snowflake (see onboarding steps below).
+    #
+    # Onboarding a new developer:
+    #   1. Add a dev_<username> entry below following this pattern
+    #   2. Run in Snowflake (as ACCOUNTADMIN):
+    #        CREATE SCHEMA IF NOT EXISTS ANALYTICS.dbt_<username>;
+    #        GRANT OWNERSHIP ON SCHEMA ANALYTICS.dbt_<username> TO ROLE TRANSFORMER;
+    #   3. Commit and push — developer selects their target in their workspace
+
+    dev_jtoraason:
       type: snowflake
       warehouse: DEV_WH
       database: ANALYTICS
       schema: dbt_jtoraason
       role: TRANSFORMER
       threads: 4
+
+    # ── Shared targets ──────────────────────────────────────────────────────
     prod:
       type: snowflake
       warehouse: DEV_WH
